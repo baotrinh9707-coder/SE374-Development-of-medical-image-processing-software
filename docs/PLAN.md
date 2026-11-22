@@ -1,47 +1,47 @@
-# Kế hoạch nghiên cứu
+# Research Plan
 
-**Trạng thái:** Đang khảo sát tài liệu và soạn proposal. Các mốc dưới đây là đề xuất để nhóm thảo luận.
+**Status:** Literature review and proposal preparation. The milestones below are open for team discussion.
 
-## Bài toán và giả thuyết
+## Problem and Hypothesis
 
-Trong sparse-view CT như hai bài giảng viên gửi, các góc đo thưa và trải trên toàn miền quét. Trong limited-angle CT, số đo chỉ nằm trong một cung liên tục, chẳng hạn 90° trong miền 180° của CT tia song song 2D. Khi xoay cung đo, các hướng biên khó khôi phục cũng thay đổi.
+In the sparse-view CT setups studied by the two papers provided by the instructor, a small number of measurement angles are distributed across the full angular range. In limited-angle CT, measurements are confined to a continuous arc, such as 90° out of the 180° range for 2D parallel-beam CT. Rotating the scan arc changes which edge orientations are difficult to recover.
 
-**Câu hỏi nghiên cứu:** Với cùng kiến trúc và dữ liệu huấn luyện, việc cho U-Net biết vị trí và độ rộng cung đo có cải thiện khả năng giữ biên theo hướng khi gặp cung mới không?
+**Research question:** With the architecture and training data held fixed, does giving the U-Net the position and width of the scan arc improve edge preservation across orientations when the model encounters an unseen arc?
 
-## Phương pháp đề xuất
+## Proposed Method
 
-1. Dùng **filtered back projection (FBP)** để tái tạo ảnh ban đầu từ các góc đã đo.
-2. Dùng **U-Net nhỏ** để dự đoán phần hiệu chỉnh ảnh. Mạng nhận thông tin về vị trí và độ rộng cung đo.
-3. Chiếu ảnh dự đoán về các góc đã đo và hiệu chỉnh dựa trên sai lệch với sinogram đầu vào (*data consistency*).
+1. Use **filtered back projection (FBP)** to reconstruct an initial image from the measured angles.
+2. Use a **small U-Net** to predict a correction to the initial image. Give the network the position and width of the scan arc.
+3. Forward-project the predicted image at the measured angles and use the difference from the input sinogram to refine the image (*data consistency*).
 
-Bài Long-sequence modeling gợi ý cách học chi tiết cục bộ cùng cấu trúc dài hạn. CG-GLORE gợi ý cách dùng mô hình phép chiếu để cập nhật ảnh. Xem [hai bài giảng viên gửi và các bài liên quan](../papers/#giảng-viên-gửi).
+The long-sequence modeling paper motivates learning fine local detail alongside long-range structure. CG-GLORE motivates using the projection model to update the reconstruction. [Papers provided by the instructor and related work](../papers/README.md#papers-provided-by-the-instructor)
 
-## Thiết kế thí nghiệm
+## Experimental Design
 
-| Hạng mục | Thiết lập dự kiến |
+| Item | Proposed setup |
 | --- | --- |
-| Dữ liệu | Khởi đầu bằng phantom có cấu trúc nhỏ theo nhiều hướng. Sau đó thử trên một tập con [LoDoPaB-CT](https://pmc.ncbi.nlm.nih.gov/articles/PMC8052416/) với sinogram mô phỏng. Chia tập theo bệnh nhân khi dùng dữ liệu CT. |
-| Cung quét | Huấn luyện với cung 60° và 120° ở một số vị trí. Kiểm tra riêng vị trí cung chưa gặp và độ rộng 90° chưa dùng trong huấn luyện. Giữ cùng số phép chiếu khi so các vị trí của cùng độ rộng. |
-| Baseline | FBP và tái tạo lặp bằng total variation (TV). |
-| Kiểm tra từng thành phần | Giữ cùng kiến trúc và cách chia dữ liệu. So bốn cấu hình U-Net khi bật hoặc tắt thông tin cung quét và bước hiệu chỉnh theo số đo. |
-| Chỉ số | PSNR, SSIM, sai số chiếu lại ở góc đã đo và F1 của đường biên theo nhóm hướng trên phantom. |
-| Minh họa | So ảnh khi xoay cung đo, phóng to cấu trúc nhỏ và đánh dấu biên bị mất hoặc biên giả trên phantom. |
+| Data | Start with phantoms containing small structures at different orientations. Then evaluate on a subset of [LoDoPaB-CT](https://pmc.ncbi.nlm.nih.gov/articles/PMC8052416/) with simulated sinograms. Split the CT data by patient. |
+| Scan arcs | Train with 60° and 120° arcs at several positions. Test unseen arc positions and an unseen 90° arc width separately. Keep the number of projections fixed when comparing arc positions at the same width. |
+| Baselines | FBP and iterative reconstruction with total variation (TV). |
+| Ablation study | Keep the U-Net architecture and data splits fixed. Compare four configurations by enabling or disabling scan-arc conditioning and projection-based refinement independently. |
+| Metrics | PSNR, SSIM, reprojection error at the measured angles, and edge F1 scores by orientation group on the phantoms. |
+| Visual evaluation | Compare reconstructions as the scan arc rotates. Zoom in on small structures and mark missing or spurious edges on the phantoms. |
 
-Các ảnh có độ khớp tương tự ở góc đã đo vẫn có thể khác nhau ở các biên khó quan sát. Nhóm sẽ đọc sai số phép chiếu cùng với chỉ số biên và ảnh tham chiếu. [Learning the Invisible](https://doi.org/10.1088/1361-6420/ab10ca)
+Reconstructions with similar agreement at the measured angles can still differ at edges that are difficult to observe. We will interpret projection errors alongside the edge metrics and reference images. [Learning the Invisible](https://doi.org/10.1088/1361-6420/ab10ca)
 
-## Tiến độ
+## Progress
 
-- [x] Khảo sát hai bài giảng viên gửi và các hướng limited-angle CT liên quan.
-- [ ] Chốt câu hỏi và thiết lập thí nghiệm trong proposal.
-- [ ] Tạo sinogram giới hạn góc và chạy baseline FBP, TV.
-- [ ] Huấn luyện các biến thể U-Net và kiểm tra trên cung mới.
-- [ ] Tổng hợp chỉ số và phân tích các ca tái tạo lỗi.
-- [ ] Hoàn thiện report và demo.
+- [x] Review the two papers provided by the instructor and related limited-angle CT research.
+- [ ] Finalize the research question and experimental setup in the proposal.
+- [ ] Generate limited-angle sinograms and run the FBP and TV baselines.
+- [ ] Train the U-Net variants and test them on unseen scan arcs.
+- [ ] Summarize the metrics and analyze reconstruction failures.
+- [ ] Complete the report and demo.
 
-## Nhật ký quyết định
+## Decision Log
 
-| Trạng thái | Quyết định | Lý do |
+| Status | Decision | Rationale |
 | --- | --- | --- |
-| Đề xuất | Bắt đầu với hình học tia song song 2D. | Dễ kiểm soát vị trí, độ rộng và số phép chiếu khi so sánh. |
-| Đề xuất | Dùng U-Net nhỏ làm mô hình chính. | Giữ chi phí huấn luyện thấp để chạy đủ bốn cấu hình đối chứng. |
-| Đề xuất | Tách bài kiểm tra vị trí cung mới khỏi độ rộng cung mới. | Đo riêng khả năng tổng quát hóa theo vị trí và theo độ rộng. |
+| Proposed | Start with 2D parallel-beam geometry. | Control arc position, arc width, and projection count in each comparison. |
+| Proposed | Use a small U-Net as the main model. | Keep training costs low enough to evaluate all four configurations. |
+| Proposed | Test unseen arc positions and unseen arc widths separately. | Measure generalization to position and width independently. |
