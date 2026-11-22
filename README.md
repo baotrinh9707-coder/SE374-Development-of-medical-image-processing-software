@@ -1,12 +1,12 @@
 # Limited-Angle CT Reconstruction
 
-Đồ án môn **SE374 — Phát triển phần mềm xử lý ảnh y khoa**. Nhóm đang khảo sát tài liệu và chuẩn bị proposal.
+Course project for **SE374: Development of Medical Image Processing Software**. The team is reviewing the literature and preparing a research proposal.
 
-## Mục tiêu
+## Goal
 
-Tái tạo ảnh CT 2D khi chỉ có phép chiếu trong một cung góc. Nhóm sẽ kiểm tra liệu một U-Net nhỏ được cung cấp thông tin về cung quét có giữ đúng các đường biên theo hướng khi gặp cung quét mới hay không. Ảnh đầu ra được hiệu chỉnh dựa trên các phép chiếu đã đo, rồi so sánh với FBP và tái tạo lặp dùng total variation (TV).
+Reconstruct 2D CT images from projections acquired over a limited angular range. We will test whether giving a small U-Net information about the scan arc helps preserve edges of different orientations when the model encounters an unseen scan arc. We will refine the output using the measured projections and compare the results with filtered back projection (FBP) and iterative reconstruction with total variation (TV).
 
-## Bố cục repo
+## Repository Layout
 
-- [`docs/PLAN.md`](docs/PLAN.md) — Bài toán, phương pháp đề xuất, thiết kế thí nghiệm và checklist tiến độ.
-- [`papers/`](papers/) — Hai bài giảng viên gửi và tài liệu theo từng hướng nghiên cứu limited-angle CT.
+- [`docs/PLAN.md`](docs/PLAN.md) — Research question, proposed method, experimental design, and progress checklist.
+- [`papers/README.md`](papers/README.md) — The two papers provided by the instructor and related work organized by research direction.
