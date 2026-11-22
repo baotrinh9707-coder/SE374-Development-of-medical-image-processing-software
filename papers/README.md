@@ -20,4 +20,15 @@ Both papers evaluate sparse-view CT. Their methods inform our approach, which we
 | Per-scan optimization with implicit neural representations | [Iterative Reconstruction with INR](https://pubmed.ncbi.nlm.nih.gov/38593820/) · [Prior-Guided Residual INR, 2026](https://pubmed.ncbi.nlm.nih.gov/43042532/) |
 | Benchmarks and datasets | [DM4CT, ICLR 2026](https://arxiv.org/abs/2602.18589) · [LoDoPaB-CT](https://pmc.ncbi.nlm.nih.gov/articles/PMC8052416/) |
 
+## Methods from Related Imaging Problems
+
+These papers offer ideas for the baseline, the reconstruction method, and the training setup. Each idea would be evaluated under our own limited-angle CT protocol.
+
+| Paper | Original problem and method | How it could inform this project |
+| --- | --- | --- |
+| Jin et al. (2017), [Deep Convolutional Neural Network for Inverse Problems in Imaging (FBPConvNet)](https://arxiv.org/abs/1611.03679) | Sparse-view CT. A multiscale residual CNN refines an FBP reconstruction. | Use FBP followed by a CNN as a learned baseline, then measure what scan-arc conditioning and projection-based refinement add. |
+| Adler & Öktem (2018), [Learned Primal-Dual Reconstruction](https://arxiv.org/abs/1707.06474) | Low-dose CT. An unrolled primal-dual network updates image and measurement representations using the forward model. | Consider an iterative design that exchanges information between the image and sinogram throughout reconstruction. |
+| Aggarwal et al. (2019), [MoDL](https://pmc.ncbi.nlm.nih.gov/articles/PMC6760673/) | Undersampled MRI. A shared CNN prior alternates with a conjugate-gradient data-consistency step. | Adapt the alternating updates using the limited-angle CT projection operator in place of the MRI encoding operator. |
+| Hendriksen et al. (2020), [Noise2Inverse](https://arxiv.org/abs/2001.11801) | Tomographic denoising. A self-supervised CNN uses separate reconstructions from disjoint subsets of noisy measurements. | Explore projection splitting for an experiment on measurement noise when clean references are scarce. The available scan arc still determines which edges are observable. |
+
 [Back to the research plan](../docs/PLAN.md)
